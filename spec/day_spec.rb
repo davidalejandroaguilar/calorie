@@ -1,84 +1,37 @@
 require 'calorie/day'
+require 'support/shared_examples/a_day'
 require 'timecop'
 
 describe Calorie::Day do
   let(:day) { Calorie::Day.new(Date.new(2010, 6, 13), "hello, world") }
 
+  it_behaves_like 'a day'
   it { expect(day.padding?).to be false }
-
-  context "during the weekend" do
-    let(:day) { Calorie::Day.new(Date.new(2010, 6, 13), "hello, world") }
-
-    it { expect(day.number).to eq(13) }
-    it { expect(day.data).to eq("hello, world") }
-    it { expect(day.weekend?).to be true }
-    it { expect(day.blank?).to be false }
-
-    context "on that particular day" do
-      before :each do
-        Timecop.freeze(Time.new(2010, 6, 13, 11, 40, 17))
-      end
-
-      after :each do
-        Timecop.return
-      end
-
-      it { expect(day.today?).to be true }
-    end
-
-    context "on a different day" do
-      before :each do
-        Timecop.freeze(Time.new(2010, 6, 14, 20, 15, 47))
-      end
-
-      after :each do
-        Timecop.return
-      end
-
-      it { expect(day.today?).to be false }
-    end
-  end
-
-  context "midweek" do
-    let(:day) { Calorie::Day.new(Date.new(2010, 6, 17), "so long, folks") }
-
-    it { expect(day.number).to eq(17) }
-    it { expect(day.data).to eq("so long, folks") }
-    it { expect(day.weekend?).to be false }
-    it { expect(day.blank?).to be false}
-  end
 end
 
-describe Calorie::NullDay do
-  let(:jan1) { Date.new(2010, 1, 1) }
-  let(:day) { Calorie::NullDay.new(jan1) }
+describe Calorie::PaddingDay do
+  let(:day) { Calorie::PaddingDay.new(Date.new(2010, 1, 1), 'hello world') }
 
-  it { expect(day.date).to eq(jan1) }
-  it { expect(day.mday).to be_nil }
-  it { expect(day.sunday?).to be false }
-  it { expect(day.saturday?).to be false }
-  it { expect(day.data).to be_nil }
   it { expect(day.padding?).to be true }
 
-  describe '.number' do
-    context 'when show_padding_days config is on' do
-      before do
-        Calorie.configuration do |config|
-          config.show_padding_days true
-        end
-      end
-
-      after do
-        Calorie.configuration do |config|
-          config.show_padding_days false
-        end
-      end
-
-      it { expect(day.number).to be 1 }
+  context 'when show_padding_days config is on' do
+    before do
+      Calorie.configuration.show_padding_days true
     end
 
-    context 'when show_padding_days config is off' do
-      it { expect(day.number).to be nil }
+    after do
+      Calorie.configuration.show_padding_days false
     end
+
+    it_behaves_like 'a day'
+  end
+
+  context 'when show_padding_days config is off' do
+    before do
+      Calorie.configuration.show_padding_days false
+    end
+
+    it { expect(day.number).to be nil }
+    it { expect(day.blank?).to be true }
   end
 end

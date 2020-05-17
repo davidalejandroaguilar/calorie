@@ -5,8 +5,8 @@ describe Calorie::Week do
   let(:thursday) { Calorie::Day.new(Date.new(2010, 6, 3)) }
   let(:days) {
     [
-      Calorie::NullDay.new(Date.new(2010, 5, 29)),
-      Calorie::NullDay.new(Date.new(2010, 5, 31)),
+      Calorie::PaddingDay.new(Date.new(2010, 5, 29)),
+      Calorie::PaddingDay.new(Date.new(2010, 5, 31)),
       Calorie::Day.new(Date.new(2010, 6, 1)),
       Calorie::Day.new(Date.new(2010, 6, 2)),
       thursday,

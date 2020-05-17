@@ -32,25 +32,13 @@ module Calorie
     end
   end
 
-  class NullDay
-    attr_reader :date
-    def initialize(date = nil)
-      @date = date
-    end
-
+  class PaddingDay < Day
     def blank?
-      true
-    end
-
-    def sunday?
-      false
-    end
-
-    def saturday?
-      false
-    end
-
-    def mday
+      if Calorie.configuration.show_padding_days?
+        false
+      else
+        true
+      end
     end
 
     def number
@@ -59,9 +47,6 @@ module Calorie
       else
         nil
       end
-    end
-
-    def data
     end
 
     def padding?
