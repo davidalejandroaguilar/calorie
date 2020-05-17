@@ -29,6 +29,14 @@ module Calorie
       day == @week_starts_on
     end
 
+    def show_padding_days(option = false)
+      @show_padding_days = option
+    end
+
+    def show_padding_days?
+      @show_padding_days
+    end
+
   end
 
   class << self

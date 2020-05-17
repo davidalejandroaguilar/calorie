@@ -26,6 +26,10 @@ module Calorie
     def today?
       @date == Date.today
     end
+
+    def padding?
+      false
+    end
   end
 
   class NullDay
@@ -50,9 +54,18 @@ module Calorie
     end
 
     def number
+      if Calorie.configuration.show_padding_days?
+        @date.mday
+      else
+        nil
+      end
     end
 
     def data
+    end
+
+    def padding?
+      true
     end
   end
 end

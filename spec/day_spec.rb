@@ -2,6 +2,9 @@ require 'calorie/day'
 require 'timecop'
 
 describe Calorie::Day do
+  let(:day) { Calorie::Day.new(Date.new(2010, 6, 13), "hello, world") }
+
+  it { expect(day.padding?).to be false }
 
   context "during the weekend" do
     let(:day) { Calorie::Day.new(Date.new(2010, 6, 13), "hello, world") }
@@ -55,4 +58,27 @@ describe Calorie::NullDay do
   it { expect(day.sunday?).to be false }
   it { expect(day.saturday?).to be false }
   it { expect(day.data).to be_nil }
+  it { expect(day.padding?).to be true }
+
+  describe '.number' do
+    context 'when show_padding_days config is on' do
+      before do
+        Calorie.configuration do |config|
+          config.show_padding_days true
+        end
+      end
+
+      after do
+        Calorie.configuration do |config|
+          config.show_padding_days false
+        end
+      end
+
+      it { expect(day.number).to be 1 }
+    end
+
+    context 'when show_padding_days config is off' do
+      it { expect(day.number).to be nil }
+    end
+  end
 end
